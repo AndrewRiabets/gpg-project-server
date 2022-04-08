@@ -12,11 +12,11 @@ const app = express();
 
 app.use(helmet());
 app.use(morgan());
-app.use(cors({credentials: true,}));
+app.use(cors({ credentials: true }));
 app.use(express.json());
 
 // Routing
-app.use("/api/auth",  authRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/companies", guard, companiesRouter);
 app.use("/api/reports", guard, reportsRouter);
 

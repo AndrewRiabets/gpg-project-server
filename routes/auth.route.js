@@ -1,11 +1,12 @@
 import { Router } from "express";
+import tryCatchWrapper from "../helpers/try.wrapper";
 import AuthController from "../controllers/auth.controllers";
-import guard from '../middlewares/guard.middleware';
+import guard from "../middlewares/guard.middleware";
 const router = new Router();
 
-router.post("/registration", AuthController.registration);
-router.post("/login", AuthController.login);
-router.post("/logout", guard, AuthController.logout);
-// router.get('/refresh', AuthController.refresh)
+router.post("/registration", tryCatchWrapper(AuthController.registration));
+router.post("/login", tryCatchWrapper(AuthController.login));
+router.post("/logout", guard, tryCatchWrapper(AuthController.logout));
+router.get("/refresh", guard, tryCatchWrapper(AuthController.refresh));
 
 export default router;
