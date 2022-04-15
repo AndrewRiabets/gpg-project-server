@@ -1,41 +1,33 @@
+import ApiError from "../error-handling/api.error";
 import CompanyModel from "../model/company.model";
 
-const listCompmanies = async (userId) => {
-  console.log(userId)
-  const result = await CompanyModel.find({owner: userId}).sort({name: 1});
-  return result;
-};
+class companiesService {
+  async createCompany(companyName, accountantId) {
+    const companyNameValidate = await CompanyModel.findOne({
+      name: companyName,
+    });
+    if (companyNameValidate) {
+      throw ApiError.Conflict(`Компания ${companyName} уже существует`);
+    }
+    const newCompany = await CompanyModel.create({
+      userId: accountantId,
+      name: companyName,
+    });
+    if (!newCompany) {
+      throw ApiError.NotImplemented("Ошибка добавления компании");
+    }
 
-const getCompanyById = async (userId, companyId) => {
-  const result = await CompanyModel.findOne({id: companyId, owner: userId});
-  return result;
-};
+    return { id: newCompany.id, name: newCompany.name };
+  }
 
-const removeCompany = async (userId, companyId) => {
-  const result = await CompanyModel.findOneAndRemove({id: companyId, owner: userId});
-  return result;
-};
+  async allCompanies() {
+    console.log("hello service");
+    const companies = await CompanyModel.find({}, { name: true }).sort({
+      name: 1,
+    });
+    console.log(companies);
+    return companies;
+  }
+}
 
-const addCompany = async (userId, body) => {
-  console.log(`Сервис ${body}`);
-  const result = await CompanyModel.create({...body, owner: userId});
-  return result;
-};
-
-const updateCompany = async (userId, companyId, body) => {
-  const result = await CompanyModel.findOneAndUpdate(
-    {id: companyId, owner: userId},
-    {...body},
-    { new: true }
-    );
-    console.log(result)
-  return result;
-};
-
-export default {
-  listCompmanies,
-  getCompanyById,
-  removeCompany,
-  addCompany,
-  updateCompany,
-};
+export default new companiesService();

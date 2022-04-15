@@ -1,6 +1,6 @@
 import authService from "../service/auth.service";
 
-class UserController {
+class AuthController {
   async registration(req, res) {
     const { login, password, name, role } = req.body;
     const userData = await authService.registration(
@@ -15,7 +15,6 @@ class UserController {
   async login(req, res) {
     const { login, password } = req.body;
     const userData = await authService.login(login, password);
-    console.log(userData);
     return res.status(200).json(userData);
   }
 
@@ -31,4 +30,4 @@ class UserController {
   }
 }
 
-export default new UserController();
+export default new AuthController();

@@ -5,24 +5,6 @@ import UserModel from "../model/user.model";
 import tokenService from "./token.service";
 
 class AuthService {
-  async registration(login, password, name, role) {
-    const updateLogin = login.trim().toLocaleLowerCase();
-    const candidate = await UserModel.findOne({ updateLogin });
-    if (candidate) {
-      throw ApiError.Conflict(
-        `Пользователь с адрессом ${email} уже существует`
-      );
-    }
-    const hashPassword = await bcrypt.hash(password, 5);
-    const user = await UserModel.create({
-      login: updateLogin,
-      password: hashPassword,
-      name,
-      role,
-    });
-    return user;
-  }
-
   async login(login, password) {
     const user = await UserModel.findOne({ login });
     if (!user) {

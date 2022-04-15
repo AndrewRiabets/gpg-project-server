@@ -3,10 +3,12 @@ import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 
+import errorMiddleware from "./middlewares/error.middleware";
 import authRouter from "./routes/auth.route";
+import usersRouter from "./routes/users.route";
 import companiesRouter from "./routes/companies.route";
 import reportsRouter from "./routes/reports.route";
-import guard from "./middlewares/guard.middleware";
+import tokenGuard from "./middlewares/guard.middleware";
 
 const app = express();
 
@@ -17,15 +19,10 @@ app.use(express.json());
 
 // Routing
 app.use("/api/auth", authRouter);
-app.use("/api/companies", guard, companiesRouter);
-app.use("/api/reports", guard, reportsRouter);
+app.use("/api/users", tokenGuard, usersRouter);
+app.use("/api/companies", tokenGuard, companiesRouter);
+app.use("/api/reports", tokenGuard, reportsRouter);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
-});
-
-app.use((err, _req, res, _next) => {
-  res.status(500).json({ message: err.message });
-});
+app.use(errorMiddleware);
 
 export default app;
