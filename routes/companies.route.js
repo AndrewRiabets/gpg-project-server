@@ -9,5 +9,13 @@ router.post(
   tryCatchWrapper(CompanyController.createCompany)
 );
 router.get("/get-companies", tryCatchWrapper(CompanyController.getCompanies));
+router.get(
+  "/get-user-companies",
+  tryCatchWrapper(CompanyController.getUserCompanies)
+);
+router.patch(
+  "/change-accounter",
+  tryCatchWrapper(CompanyController.changeAccounter)
+);
 
 export default router;

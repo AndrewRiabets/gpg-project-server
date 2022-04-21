@@ -7,9 +7,26 @@ class CompanyController {
     return res.status(201).json(companyData);
   }
   async getCompanies(req, res) {
-    console.log("hello controller");
     const allCompanies = await companiesService.allCompanies(req.query);
     return res.status(201).json(allCompanies);
+  }
+  async getUserCompanies(req, res) {
+    const reception = req.query.reception;
+    console.log(reception);
+    const userCompanies = await companiesService.userCompanies(
+      req.user,
+      reception
+    );
+    console.log(userCompanies);
+    return res.status(201).json(userCompanies);
+  }
+  async changeAccounter(req, res) {
+    const { companyName, userId } = req.body;
+    const userCompanies = await companiesService.changeAccounter(
+      companyName,
+      userId
+    );
+    return res.status(201).json(userCompanies);
   }
 }
 

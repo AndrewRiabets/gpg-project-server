@@ -21,12 +21,36 @@ class companiesService {
   }
 
   async allCompanies() {
-    console.log("hello service");
     const companies = await CompanyModel.find({}, { name: true }).sort({
       name: 1,
     });
-    console.log(companies);
     return companies;
+  }
+  async userCompanies(userId, reception) {
+    if (!reception) {
+      throw ApiError.BadRequest("Отсутслвует обязателный параметр");
+    }
+    let companies;
+    if (reception === "currentuser") {
+      companies = await CompanyModel.find({ userId }, { name: true }).sort({
+        name: 1,
+      });
+    } else {
+      companies = await CompanyModel.find(
+        { userId: reception },
+        { name: true }
+      ).sort({
+        name: 1,
+      });
+    }
+    return companies;
+  }
+
+  async changeAccounter(companyName, userId) {
+    const company = await CompanyModel.findOne({ name: companyName });
+    company.userId = userId;
+    await company.save();
+    return company;
   }
 }
 
