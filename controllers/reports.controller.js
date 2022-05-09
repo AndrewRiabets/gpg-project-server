@@ -1,39 +1,24 @@
 import reportsService from "../service/report.service";
 
-const getReports = async (req, res, next) => {
-  const reports = await reportsService.listReports(req.query);
-  res.status(200).json(reports);
-};
-
-const getReportById = async (req, res, next) => {
-  const { id } = req.params;
-  const report = await reportsService.getReportById(id);
-  if (report) {
-    res.status(200).json(report);
+class ReportsController {
+  async createReport(req, res) {
+    const reportData = await reportsService.createReport(req.body);
+    return res.status(201).json(reportData);
   }
-};
-
-const addReport = async (req, res, next) => {
-  const newReport = await reportsService.addReport(req.body);
-  res.status(201).json(newReport);
-};
-
-const removeReport = async (req, res, next) => {
-  const id = req.params;
-  const report = await reportsService.removeReport(id, req.body);
-  if (report) {
-    return res.status(200).json({ report });
+  async getCompanyReports(req, res) {
+    const reception = req.query.reception;
+    const allCompanyReports = await reportsService.allCompanyReports(reception);
+    return res.status(201).json(allCompanyReports);
   }
-  res.status(404).json({ message: "Report not found" });
-};
-
-const updateReport = async (req, res, next) => {
-  const id = req.params;
-  const report = await reportsService.updateReport(id, req.body);
-  if (report) {
-    return res.status(200).json(report);
+  async getCompanyReport(req, res) {
+    const reception = req.query.reception;
+    const companyReport = await reportsService.getCompanyReportById(reception);
+    return res.status(201).json(companyReport);
   }
-  res.status(404).json({ message: "Company not found" });
-};
+  async updateReport(req, res) {
+    const companyReport = await reportsService.updateReport(req.body);
+    return res.status(201).json(companyReport);
+  }
+}
 
-export { getReports, getReportById, addReport, removeReport, updateReport };
+export default new ReportsController();

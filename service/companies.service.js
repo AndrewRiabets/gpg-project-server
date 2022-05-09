@@ -26,6 +26,7 @@ class companiesService {
     });
     return companies;
   }
+  
   async userCompanies(userId, reception) {
     if (!reception) {
       throw ApiError.BadRequest("Отсутслвует обязателный параметр");

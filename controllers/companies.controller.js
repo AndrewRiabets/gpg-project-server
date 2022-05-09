@@ -2,8 +2,8 @@ import companiesService from "../service/companies.service";
 
 class CompanyController {
   async createCompany(req, res) {
-    const { name, UserId } = req.body;
-    const companyData = await companiesService.createCompany(name, UserId);
+    const { name, userId } = req.body;
+    const companyData = await companiesService.createCompany(name, userId);
     return res.status(201).json(companyData);
   }
   async getCompanies(req, res) {
@@ -12,12 +12,10 @@ class CompanyController {
   }
   async getUserCompanies(req, res) {
     const reception = req.query.reception;
-    console.log(reception);
     const userCompanies = await companiesService.userCompanies(
       req.user,
       reception
     );
-    console.log(userCompanies);
     return res.status(201).json(userCompanies);
   }
   async changeAccounter(req, res) {
