@@ -5,7 +5,6 @@ import UserModel from "../model/user.model";
 
 class UsersService {
   async createUser(login, password, name, role) {
-    console.log(name);
     const newLogin = login.trim().toLocaleLowerCase();
     const candidateLogin = await UserModel.findOne({ login: newLogin });
     if (candidateLogin) {

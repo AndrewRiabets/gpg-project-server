@@ -157,7 +157,6 @@ class reportsService {
       },
       { new: true }
     );
-    console.log(updatedReport);
     return updatedReport;
   }
 }
