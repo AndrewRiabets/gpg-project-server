@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 
 import errorMiddleware from "./middlewares/error.middleware";
@@ -14,8 +15,9 @@ const app = express();
 
 app.use(helmet());
 app.use(morgan());
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Routing
 app.use("/api/auth", authRouter);

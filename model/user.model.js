@@ -30,14 +30,6 @@ const userSchema = new Schema(
       },
       default: Role.ACC_USER,
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-    token: {
-      type: String,
-      default: null,
-    },
   },
   {
     versionKey: false,

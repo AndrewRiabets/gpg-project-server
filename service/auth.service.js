@@ -6,33 +6,45 @@ import tokenService from "./token.service";
 
 class AuthService {
   async login(login, password) {
-    const user = await UserModel.findOne({ login });
-    if (!user) {
+    const userData = await UserModel.findOne({ login });
+    if (!userData) {
       throw ApiError.BadRequest("Ошибка авторизации");
     }
-    const isEquals = await bcrypt.compare(password, user.password);
+    const isEquals = await bcrypt.compare(password, userData.password);
     if (!isEquals) {
       throw ApiError.BadRequest("Ошибка авторизации");
     }
-    const payload = { id: user._id, login: user.login };
-    const token = tokenService.generateTokens(payload);
-    await tokenService.saveToken(user._id, token);
-    const data = { user: { name: user.name, role: user.role }, token };
-    return data;
+    const payload = { id: userData._id, login: userData.login };
+    const tokens = tokenService.generateTokens(payload);
+    await tokenService.saveToken(userData._id, tokens.refreshToken);
+    const user = { id: userData.id, name: userData.name, role: userData.role };
+    return { ...tokens, user };
   }
 
-  async refresh(userId) {
-    const user = await UserModel.findById(userId);
-    const payload = { id: user._id, login: user.login };
-    const token = tokenService.generateTokens(payload);
-    await tokenService.saveToken(user._id, token);
-    const data = { user: { name: user.name, role: user.role }, token };
-    return data;
-  }
-
-  async logout(id, resetToken) {
-    const token = await tokenService.saveToken(id, resetToken);
+  async logout(refreshToken) {
+    const token = await tokenService.removeToken(refreshToken);
     return token;
+  }
+
+  async refresh(refreshToken) {
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedError();
+    }
+    const userData = tokenService.verifyRefreshToken(refreshToken);
+    const tokenFromDb = await tokenService.findToken(refreshToken);
+    if (!userData || !tokenFromDb) {
+      throw ApiError.UnauthorizedError();
+    }
+    const userInfo = await UserModel.findById(userData.id);
+    const payload = { id: userInfo._id, login: userInfo.login };
+    const tokens = tokenService.generateTokens(payload);
+    await tokenService.saveToken(userInfo._id, tokens.refreshToken);
+    const user = {
+      id: userInfo.id,
+      name: userInfo.name,
+      role: userInfo.role,
+    };
+    return { ...tokens, user };
   }
 }
 

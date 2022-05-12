@@ -5,7 +5,7 @@ import guard from "../middlewares/guard.middleware";
 const router = new Router();
 
 router.post("/login", tryCatchWrapper(AuthController.login));
-router.post("/logout", guard, tryCatchWrapper(AuthController.logout));
-router.get("/refresh", guard, tryCatchWrapper(AuthController.refresh));
+router.get("/refresh", tryCatchWrapper(AuthController.refresh));
+router.post("/logout", tryCatchWrapper(AuthController.logout));
 
 export default router;
